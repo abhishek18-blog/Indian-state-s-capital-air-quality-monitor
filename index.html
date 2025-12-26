@@ -9,23 +9,18 @@
     <!-- Load Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <!-- Load Lucide Icons for aesthetic appeal -->
+    <!-- Load Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Set default font and enhanced dark theme styles -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0c0e18; /* Near-black background */
-            color: #e2e8f0; /* Light Text */
+            background-color: #0c0e18;
+            color: #e2e8f0;
         }
-        .container {
-            max-width: 1500px;
-        }
-        /* Enhanced Card Style */
         .card {
-            background-color: #1a202c; /* Darker Slate Card Background */
+            background-color: #1a202c;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
             border: 1px solid #2d3748;
             border-radius: 16px;
@@ -48,56 +43,37 @@
             font-size: 0.875rem;
             text-shadow: 0 1px 1px rgba(0,0,0,0.2);
         }
-        /* Custom scrollbar for table */
         #data-table-body-wrapper {
             max-height: 30rem;
             overflow-y: auto;
         }
-        #data-table-body-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-        #data-table-body-wrapper::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
-        }
-        #data-table-body-wrapper::-webkit-scrollbar-track {
-            background: #1e293b;
-        }
-        /* Pulse animation */
+        #data-table-body-wrapper::-webkit-scrollbar { width: 8px; }
+        #data-table-body-wrapper::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        #data-table-body-wrapper::-webkit-scrollbar-track { background: #1e293b; }
+        
         @keyframes pulse-once {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.05); opacity: 0.9; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .pulse-on-update {
-            animation: pulse-once 0.5s ease-in-out;
-        }
-        /* AI Loading Spinner */
-        .ai-spinner {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .pulse-on-update { animation: pulse-once 0.5s ease-in-out; }
+        .ai-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-10">
-    <div class="container mx-auto">
+    <div class="container mx-auto max-w-[1500px]">
         <header class="text-center mb-12">
             <h1 class="text-4xl sm:text-6xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">
                 Indian Capitals Air Quality
             </h1>
-            <p class="text-xl text-gray-400">Real-time Environmental Monitoring Dashboard with <span class="text-indigo-400">Gemini AI</span></p>
+            <p class="text-xl text-gray-400">Real-time Environmental Monitoring with <span class="text-indigo-400">Gemini AI</span></p>
         </header>
 
-        <!-- Main Dashboard Layout -->
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Column 1: Controls and Status -->
+            <!-- Sidebar Controls -->
             <div class="lg:col-span-1 space-y-8">
                 
-                <!-- City Selection Card -->
                 <div class="card">
                     <h2 class="text-2xl font-semibold mb-5 text-teal-400 flex items-center">
                         <i data-lucide="map-pin" class="w-6 h-6 mr-3"></i>
@@ -106,13 +82,10 @@
                     <div class="space-y-4">
                         <div>
                             <label for="city-select" class="block text-sm font-medium text-gray-300 mb-1">Monitored Cities:</label>
-                            <!-- Updated: Correct change handler -->
                             <select id="city-select" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-teal-500 focus:border-teal-500 transition duration-150 shadow-inner" onchange="handleCityChange()">
-                                <!-- Options populated by JS on load -->
                             </select>
                         </div>
                         
-                        <!-- HEALTH PROFILE SECTION -->
                         <div class="pt-2 border-t border-gray-700">
                              <label for="health-profile" class="block text-sm font-medium text-gray-300 mb-1 mt-3">Your Health Profile:</label>
                              <select id="health-profile" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-teal-500 focus:border-teal-500 transition duration-150 shadow-inner mb-3">
@@ -131,7 +104,6 @@
                             </button>
                         </div>
 
-                        <!-- AI Buttons -->
                         <div class="flex flex-col gap-3 pt-2 border-t border-gray-700">
                             <button id="btn-trip" onclick="planTrip()" class="w-full flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-lg shadow-emerald-900/50">
                                 <i data-lucide="map" class="w-4 h-4 mr-2"></i>
@@ -142,16 +114,9 @@
                                 Audio Report
                             </button>
                         </div>
-
-                        <div class="pt-2">
-                            <p class="text-xs text-gray-500 text-center">
-                                Data updates automatically every 30 seconds.
-                            </p>
-                        </div>
                     </div>
                 </div>
-                
-                <!-- Health Alert Card -->
+
                 <div id="health-output-card" class="card hidden transition-all duration-500 bg-rose-900/20 border-rose-500/30">
                     <h2 class="text-xl font-semibold mb-3 text-rose-400 flex items-center">
                         <i data-lucide="activity" class="w-5 h-5 mr-2"></i>
@@ -160,7 +125,6 @@
                     <div id="health-output-content" class="text-sm text-gray-300 leading-relaxed space-y-2"></div>
                 </div>
 
-                <!-- Trip Suggestion Result Card -->
                 <div id="trip-output-card" class="card hidden transition-all duration-500 bg-emerald-900/20 border-emerald-500/30">
                     <h2 class="text-xl font-semibold mb-3 text-emerald-400 flex items-center">
                         <i data-lucide="compass" class="w-5 h-5 mr-2"></i>
@@ -169,7 +133,7 @@
                     <div id="trip-output-content" class="text-sm text-gray-300 leading-relaxed space-y-2"></div>
                 </div>
 
-                <!-- Latest Reading Card -->
+                <!-- Reading Details -->
                 <div class="card">
                     <h2 class="text-2xl font-semibold mb-5 text-teal-400 flex items-center">
                         <i data-lucide="gauge" class="w-6 h-6 mr-3"></i>
@@ -177,8 +141,6 @@
                     </h2>
                     <div id="latest-reading-content" class="space-y-4">
                         <p class="text-lg"><span class="font-medium text-gray-400">Timestamp:</span> <span id="latest-timestamp" class="text-white font-mono text-sm">N/A</span></p>
-                        
-                        <!-- AQI Card -->
                         <div id="latest-aqi-card" class="flex items-center justify-between p-4 bg-gray-700 rounded-xl transition duration-500 text-white shadow-xl">
                             <span class="font-bold text-xl text-white flex items-center">
                                 <i data-lucide="cloud" class="w-6 h-6 mr-2"></i>
@@ -186,35 +148,21 @@
                             </span>
                             <span id="latest-aqi" class="text-4xl font-extrabold">N/A</span>
                         </div>
-                        
                         <div class="grid grid-cols-2 gap-4 text-sm">
-                            <!-- Detail Cards -->
                             <div id="latest-temp-card" class="p-4 bg-gray-700 rounded-xl transition duration-500 text-white">
-                                <span class="block text-gray-300 flex items-center mb-1">
-                                    <i data-lucide="thermometer" class="w-4 h-4 mr-2 text-red-400"></i>
-                                    Temp:
-                                </span>
+                                <span class="block text-gray-300 flex items-center mb-1"><i data-lucide="thermometer" class="w-4 h-4 mr-2 text-red-400"></i>Temp:</span>
                                 <span id="latest-temp" class="font-semibold text-lg">N/A</span>
                             </div>
                             <div id="latest-humidity-card" class="p-4 bg-gray-700 rounded-xl transition duration-500 text-white">
-                                <span class="block text-gray-300 flex items-center mb-1">
-                                    <i data-lucide="droplets" class="w-4 h-4 mr-2 text-blue-400"></i>
-                                    Humidity:
-                                </span>
+                                <span class="block text-gray-300 flex items-center mb-1"><i data-lucide="droplets" class="w-4 h-4 mr-2 text-blue-400"></i>Humidity:</span>
                                 <span id="latest-humidity" class="font-semibold text-lg">N/A</span>
                             </div>
                             <div id="latest-wind-card" class="p-4 bg-gray-700 rounded-xl transition duration-500 text-white">
-                                <span class="block text-gray-300 flex items-center mb-1">
-                                    <i data-lucide="wind" class="w-4 h-4 mr-2 text-green-400"></i>
-                                    Wind Speed:
-                                </span>
+                                <span class="block text-gray-300 flex items-center mb-1"><i data-lucide="wind" class="w-4 h-4 mr-2 text-green-400"></i>Wind Speed:</span>
                                 <span id="latest-wind" class="font-semibold text-lg">N/A</span>
                             </div>
                             <div id="latest-status-card" class="p-4 bg-gray-700 rounded-xl transition duration-500 text-white flex flex-col justify-center">
-                                <span class="block text-gray-300 flex items-center mb-1">
-                                    <i data-lucide="activity" class="w-4 h-4 mr-2 text-purple-400"></i>
-                                    Status:
-                                </span>
+                                <span class="block text-gray-300 flex items-center mb-1"><i data-lucide="activity" class="w-4 h-4 mr-2 text-purple-400"></i>Status:</span>
                                 <span id="latest-status" class="quality-status-badge bg-gray-500 text-white mt-1 w-fit">N/A</span>
                             </div>
                         </div>
@@ -222,21 +170,18 @@
                 </div>
             </div>
 
-            <!-- Column 2: Chart and History -->
+            <!-- Visualization and History -->
             <div class="lg:col-span-2 space-y-8">
-
-                <!-- Chart Card -->
                 <div class="card">
                     <h2 class="text-2xl font-semibold mb-5 text-teal-400 flex items-center">
                         <i data-lucide="line-chart" class="w-6 h-6 mr-3"></i>
-                        AQI Trend (Last 24 Hours)
+                        AQI Trend
                     </h2>
                     <div class="chart-container">
                         <canvas id="aqiChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Full Data History -->
                 <div class="card">
                     <h2 class="text-2xl font-semibold mb-5 text-teal-400 flex items-center">
                         <i data-lucide="table" class="w-6 h-6 mr-3"></i>
@@ -247,53 +192,44 @@
                             <table class="min-w-full divide-y divide-gray-700">
                                 <thead class="bg-gray-800 sticky top-0 z-10">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider rounded-tl-lg">
-                                            Timestamp
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                                            AQI (PM2.5)
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                                            Status
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                                            <div class="flex items-center"><i data-lucide="thermometer" class="w-4 h-4 mr-1 text-red-400"></i> Temp</div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                                            <div class="flex items-center"><i data-lucide="droplets" class="w-4 h-4 mr-1 text-blue-400"></i> Humidity</div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider rounded-tr-lg">
-                                            <div class="flex items-center"><i data-lucide="wind" class="w-4 h-4 mr-1 text-green-400"></i> Wind</div>
-                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider rounded-tl-lg">Timestamp</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">AQI (PM2.5)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Temp</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Humidity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider rounded-tr-lg">Wind</th>
                                     </tr>
                                 </thead>
                                 <tbody id="data-table-body" class="bg-gray-900 divide-y divide-gray-800">
-                                    <!-- Table rows will be populated by JavaScript -->
-                                    <tr><td colspan="6" class="p-4 text-center text-gray-500">Loading data...</td></tr>
+                                    <tr><td colspan="6" class="p-4 text-center text-gray-500">Connecting to live feed...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
-    
-    <!-- Hidden Audio Element for TTS -->
     <audio id="audio-player" class="hidden"></audio>
 
-    <!-- Firebase SDKs and JavaScript Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, query, onSnapshot, setLogLevel, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global variables provided by the environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // ==========================================
+        // INTERNAL API KEYS (PASTE YOUR KEYS HERE)
+        // ==========================================
+        const INTERNAL_GEMINI_KEY = "AIzaSyC-V8hfecz6bI5DF8Z45C8-8eNQDoqVnoQ";   // <-- Paste Gemini Key Here
+        const INTERNAL_WEATHER_KEY = "3d23095ff5eae1ad55974249310c60b3";  // <-- Paste WeatherAPI Key Here
+        // ==========================================
+
+        let activeGeminiKey = INTERNAL_GEMINI_KEY; 
+        let activeWeatherKey = INTERNAL_WEATHER_KEY; 
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'indian-aqi-monitor';
         const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        const apiKey = ""; // Set by environment
 
         let app, db, auth, userId = null;
         let cityData = {}; 
@@ -302,131 +238,109 @@
         let realtimeInterval = null; 
 
         const DATA_COLLECTION_PATH = `artifacts/${appId}/public/data/air-quality`;
-        setLogLevel('silent'); // Quiet logs unless debugging
 
-        // Configuration for 34 major Indian State and UT Capitals
-        const cityConfigs = [
-            { city: "New Delhi", base_aqi: 180, aqi_range: 80, base_temp: 22, temp_range: 8, base_humidity: 45, hum_range: 15 },
-            { city: "Mumbai", base_aqi: 90, aqi_range: 40, base_temp: 26, temp_range: 4, base_humidity: 65, hum_range: 15 }, 
-            { city: "Kolkata", base_aqi: 160, aqi_range: 70, base_temp: 25, temp_range: 7, base_humidity: 60, hum_range: 15 },
-            { city: "Chennai", base_aqi: 110, aqi_range: 60, base_temp: 28, temp_range: 4, base_humidity: 70, hum_range: 10 }, 
-            { city: "Bengaluru", base_aqi: 100, aqi_range: 50, base_temp: 22, temp_range: 6, base_humidity: 50, hum_range: 20 },
-            { city: "Hyderabad", base_aqi: 110, aqi_range: 40, base_temp: 24, temp_range: 8, base_humidity: 45, hum_range: 15 },
-            { city: "Lucknow", base_aqi: 190, aqi_range: 90, base_temp: 20, temp_range: 10, base_humidity: 40, hum_range: 20 },
-            { city: "Patna", base_aqi: 220, aqi_range: 100, base_temp: 21, temp_range: 9, base_humidity: 50, hum_range: 15 },
-            { city: "Jaipur", base_aqi: 150, aqi_range: 60, base_temp: 20, temp_range: 12, base_humidity: 30, hum_range: 10 }, 
-            { city: "Bhopal", base_aqi: 105, aqi_range: 45, base_temp: 22, temp_range: 10, base_humidity: 45, hum_range: 15 },
-            { city: "Gandhinagar", base_aqi: 130, aqi_range: 50, base_temp: 24, temp_range: 8, base_humidity: 40, hum_range: 15 },
-            { city: "Bhubaneswar", base_aqi: 120, aqi_range: 50, base_temp: 26, temp_range: 5, base_humidity: 60, hum_range: 20 },
-            { city: "Ranchi", base_aqi: 140, aqi_range: 60, base_temp: 23, temp_range: 7, base_humidity: 55, hum_range: 15 },
-            { city: "Dispur", base_aqi: 80, aqi_range: 30, base_temp: 22, temp_range: 6, base_humidity: 70, hum_range: 10 }, 
-            { city: "Shimla", base_aqi: 40, aqi_range: 10, base_temp: 15, temp_range: 5, base_humidity: 55, hum_range: 10 }, 
-            { city: "Thiruvananthapuram", base_aqi: 60, aqi_range: 20, base_temp: 28, temp_range: 3, base_humidity: 75, hum_range: 10 }, 
-            { city: "Panaji", base_aqi: 70, aqi_range: 30, base_temp: 27, temp_range: 4, base_humidity: 75, hum_range: 10 }, 
-            { city: "Chandigarh", base_aqi: 125, aqi_range: 55, base_temp: 21, temp_range: 8, base_humidity: 40, hum_range: 15 }, 
-            { city: "Raipur", base_aqi: 155, aqi_range: 65, base_temp: 25, temp_range: 9, base_humidity: 40, hum_range: 15 },
-            { city: "Amaravati", base_aqi: 95, aqi_range: 40, base_temp: 27, temp_range: 5, base_humidity: 55, hum_range: 15 },
-            { city: "Port Blair", base_aqi: 35, aqi_range: 15, base_temp: 29, temp_range: 3, base_humidity: 80, hum_range: 10 },
-            { city: "Itanagar", base_aqi: 75, aqi_range: 30, base_temp: 22, temp_range: 5, base_humidity: 65, hum_range: 10 },
-            { city: "Imphal", base_aqi: 65, aqi_range: 25, base_temp: 23, temp_range: 4, base_humidity: 70, hum_range: 10 },
-            { city: "Shillong", base_aqi: 50, aqi_range: 15, base_temp: 18, temp_range: 5, base_humidity: 75, hum_range: 10 },
-            { city: "Aizawl", base_aqi: 55, aqi_range: 20, base_temp: 21, temp_range: 4, base_humidity: 70, hum_range: 10 },
-            { city: "Kohima", base_aqi: 45, aqi_range: 15, base_temp: 17, temp_range: 5, base_humidity: 70, hum_range: 10 },
-            { city: "Gangtok", base_aqi: 30, aqi_range: 10, base_temp: 15, temp_range: 4, base_humidity: 60, hum_range: 10 },
-            { city: "Agartala", base_aqi: 90, aqi_range: 40, base_temp: 25, temp_range: 5, base_humidity: 65, hum_range: 15 },
-            { city: "Dehradun", base_aqi: 115, aqi_range: 50, base_temp: 20, temp_range: 8, base_humidity: 40, hum_range: 15 },
-            { city: "Srinagar", base_aqi: 85, aqi_range: 35, base_temp: 18, temp_range: 6, base_humidity: 50, hum_range: 15 },
-            { city: "Daman", base_aqi: 50, aqi_range: 20, base_temp: 27, temp_range: 3, base_humidity: 78, hum_range: 10 },
-            { city: "Puducherry", base_aqi: 65, aqi_range: 25, base_temp: 28, temp_range: 3, base_humidity: 75, hum_range: 10 },
-            { city: "Leh", base_aqi: 20, aqi_range: 10, base_temp: 10, temp_range: 15, base_humidity: 30, hum_range: 10 },
-            { city: "Kavaratti", base_aqi: 30, aqi_range: 10, base_temp: 28, temp_range: 3, base_humidity: 80, hum_range: 5 }
+        const capitals = [
+            "New Delhi", "Mumbai", "Kolkata", "Chennai", "Bengaluru", "Hyderabad", 
+            "Lucknow", "Patna", "Jaipur", "Bhopal", "Gandhinagar", "Bhubaneswar", 
+            "Ranchi", "Dispur", "Shimla", "Thiruvananthapuram", "Panaji", "Chandigarh",
+            "Raipur", "Amaravati", "Port Blair", "Itanagar", "Imphal", "Shillong",
+            "Aizawl", "Kohima", "Gangtok", "Agartala", "Dehradun", "Srinagar",
+            "Daman", "Puducherry", "Leh", "Kavaratti"
         ];
 
+        // --- WEATHER API LOGIC ---
+        async function fetchWeatherData(city) {
+            if (!activeWeatherKey) {
+                console.warn("WeatherAPI Key missing. Using fallback mock data.");
+                return generateMockReading(city);
+            }
+
+            const url = `https://api.weatherapi.com/v1/current.json?key=${activeWeatherKey}&q=${city}&aqi=yes`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`WeatherAPI error: ${response.status}`);
+                const data = await response.json();
+
+                return {
+                    city: city,
+                    timestamp: new Date(),
+                    aqi: data.current.air_quality.pm2_5 || 0,
+                    temperature: data.current.temp_c,
+                    humidity: data.current.humidity,
+                    wind_speed: data.current.wind_kph * 0.27778, 
+                    userId: userId || 'anonymous'
+                };
+            } catch (err) {
+                console.error("Fetch failed:", err);
+                return generateMockReading(city);
+            }
+        }
+
+        function generateMockReading(city) {
+            return {
+                city,
+                timestamp: new Date(),
+                aqi: 50 + Math.random() * 200,
+                temperature: 20 + Math.random() * 15,
+                humidity: 40 + Math.random() * 40,
+                wind_speed: 1 + Math.random() * 5,
+                userId: userId || 'anonymous'
+            };
+        }
+
         // --- AI UTILITIES ---
-        
-        // Helper for exponential backoff with smart retry logic
         async function fetchWithBackoff(url, options, maxRetries = 3) {
             let delay = 1000;
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const response = await fetch(url, options);
-                    if (!response.ok) {
-                        // Fail fast on 4xx errors (Client Error), retry on 5xx (Server Error)
-                        if (response.status >= 400 && response.status < 500 && response.status !== 429) {
-                            const errorText = await response.text();
-                            throw new Error(`API Error (${response.status}): ${errorText}`);
-                        }
-                        throw new Error(`Status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`Status: ${response.status}`);
                     return response;
                 } catch (error) {
-                    // Don't retry if it's a known client-side error (like invalid key)
-                    if (error.message.includes("API Error")) throw error;
-                    
                     if (i === maxRetries - 1) throw error;
-                    console.warn(`Attempt ${i+1} failed, retrying...`);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     delay *= 2;
                 }
             }
         }
 
-        // --- AI FUNCTION 1: HEALTH ADVICE ---
         async function getHealthAdvice() {
-            console.log("Health Advice Button Clicked");
+            if (!activeGeminiKey) {
+                alert("Internal API Key Required: Please add your Gemini key to the code.");
+                return;
+            }
+
             const selectedCity = document.getElementById('city-select').value;
             const profile = document.getElementById('health-profile').value;
             const card = document.getElementById('health-output-card');
             const content = document.getElementById('health-output-content');
             const btn = document.getElementById('btn-health');
             
-            // 1. Immediate Visual Feedback: Show Card & Loading State
             card.classList.remove('hidden');
-            
-            if (!cityData[selectedCity] || cityData[selectedCity].length === 0) {
-                content.innerHTML = '<span class="text-yellow-400 flex items-center"><i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i> Waiting for location data...</span>';
-                lucide.createIcons();
-                return;
-            }
+            if (!cityData[selectedCity]?.length) return;
 
-            // Loading state
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Checking...`;
-            content.innerHTML = '<span class="text-slate-400 italic flex items-center"><i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Analyzing health risks for your profile...</span>';
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Analysing...`;
+            content.innerHTML = 'Analyzing health risks based on profile...';
             lucide.createIcons();
 
             const latest = cityData[selectedCity][cityData[selectedCity].length - 1];
-            const status = getAqiStatus(latest.aqi);
-
-            const prompt = `Current conditions in ${selectedCity}: AQI ${latest.aqi.toFixed(0)} (${status.label}), Temperature ${latest.temperature.toFixed(1)}°C, Humidity ${latest.humidity.toFixed(0)}%. 
-            User Profile: ${profile}.
-            Provide a personalized, 2-sentence health alert and activity recommendation for this specific user profile given the current environmental conditions. Be direct and medical.`;
+            const prompt = `Location: ${selectedCity}. Current PM2.5 AQI: ${latest.aqi.toFixed(0)}. Temp: ${latest.temperature.toFixed(1)}C. User Profile: ${profile}. Provide a 2-sentence medical recommendation for activity today.`;
 
             try {
                 const response = await fetchWithBackoff(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${activeGeminiKey}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }]
-                        })
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                     }
                 );
-                
                 const result = await response.json();
-                
-                if (result.candidates && result.candidates[0].content) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    content.innerHTML = `<div class="text-slate-200 leading-relaxed">${text}</div>`;
-                } else {
-                    throw new Error("Invalid API response structure");
-                }
-                
+                content.innerHTML = result.candidates[0].content.parts[0].text;
             } catch (error) {
-                console.error("Health Advice Error:", error);
-                const errorMsg = error.message.includes("API Error") ? "API Key Invalid" : "Connection failed";
-                content.innerHTML = `<span class="text-red-400 flex items-center"><i data-lucide="x-circle" class="w-4 h-4 mr-2"></i> ${errorMsg}. Please try again.</span>`;
+                content.innerHTML = "API Error: Check your Gemini Key in the code.";
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i data-lucide="heart-pulse" class="w-4 h-4 mr-2"></i> Check Health Safety`;
@@ -434,57 +348,38 @@
             }
         }
 
-        // --- AI FUNCTION 2: TRIP PLANNER ---
         async function planTrip() {
+            if (!activeGeminiKey) {
+                alert("Internal API Key Required: Please add your Gemini key to the code.");
+                return;
+            }
+
             const selectedCity = document.getElementById('city-select').value;
             const card = document.getElementById('trip-output-card');
             const content = document.getElementById('trip-output-content');
             const btn = document.getElementById('btn-trip');
             
-            // Visual feedback
             card.classList.remove('hidden');
-            
-            if (!cityData[selectedCity] || cityData[selectedCity].length === 0) {
-                content.innerHTML = '<span class="text-yellow-400 flex items-center"><i data-lucide="alert-triangle" class="w-4 h-4 mr-2"></i> Waiting for location data...</span>';
-                lucide.createIcons();
-                return;
-            }
-
-            // Loading state
             btn.disabled = true;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Planning...`;
-            content.innerHTML = '<span class="text-slate-400 italic flex items-center"><i data-lucide="loader" class="w-4 h-4 mr-2 animate-spin"></i> Finding nearby getaways with better air...</span>';
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Searching...`;
+            content.innerHTML = 'Finding cleaner getaway options...';
             lucide.createIcons();
 
-            const latest = cityData[selectedCity][cityData[selectedCity].length - 1];
-            const prompt = `I am currently in ${selectedCity}. The AQI is ${latest.aqi.toFixed(0)}. Suggest 3 specific weekend getaway destinations within 300km of ${selectedCity} that generally have better air quality, more nature, or are hill stations. Format the response as a concise HTML bulleted list with <strong>Destination Name</strong>: Brief description.`;
+            const prompt = `Recommend 3 weekend getaways within 300km of ${selectedCity} that typically have better air quality. Brief bullet points.`;
 
             try {
                 const response = await fetchWithBackoff(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${activeGeminiKey}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                            tools: [{ "google_search": {} }] // Use search for real locations
-                        })
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], tools: [{ "google_search": {} }] })
                     }
                 );
-                
                 const result = await response.json();
-                
-                if (result.candidates && result.candidates[0].content) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    content.innerHTML = `<div class="text-slate-200 leading-relaxed space-y-2">${text}</div>`;
-                } else {
-                    throw new Error("Invalid API response structure");
-                }
-                
+                content.innerHTML = result.candidates[0].content.parts[0].text;
             } catch (error) {
-                console.error("Trip Planning Error:", error);
-                const errorMsg = error.message.includes("API Error") ? "API Key Invalid" : "Connection failed";
-                content.innerHTML = `<span class="text-red-400 flex items-center"><i data-lucide="x-circle" class="w-4 h-4 mr-2"></i> ${errorMsg}. Please try again.</span>`;
+                content.innerHTML = "Search Error: Could not retrieve suggestions.";
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i data-lucide="map" class="w-4 h-4 mr-2"></i> Plan Low-AQI Trip`;
@@ -492,69 +387,26 @@
             }
         }
 
-        // --- AI FUNCTION 3: TTS AUDIO REPORT ---
-        
-        // Helpers for PCM -> WAV conversion
-        function base64ToArrayBuffer(base64) {
-            const binaryString = window.atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-            return bytes.buffer;
-        }
-
-        function pcmToWav(samples, sampleRate) {
-            const buffer = new ArrayBuffer(44 + samples.length * 2);
-            const view = new DataView(buffer);
-            const writeString = (view, offset, string) => {
-                for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i));
-            };
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + samples.length * 2, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true);
-            view.setUint16(22, 1, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, samples.length * 2, true);
-            let offset = 44;
-            for (let i = 0; i < samples.length; i++, offset += 2) {
-                view.setInt16(offset, samples[i], true);
-            }
-            return new Blob([buffer], { type: 'audio/wav' });
-        }
-
         async function speakStatus() {
-            const selectedCity = document.getElementById('city-select').value;
-            const btn = document.getElementById('btn-speak');
-            const player = document.getElementById('audio-player');
-            
-            if (!cityData[selectedCity] || cityData[selectedCity].length === 0) {
-                alert('Please wait for data to populate.');
+            if (!activeGeminiKey) {
+                alert("Internal API Key Required: Please add your Gemini key to the code.");
                 return;
             }
-            
-            // Get latest reading
-            const latest = cityData[selectedCity][cityData[selectedCity].length - 1];
-            const status = getAqiStatus(latest.aqi);
-            
-            // Script for TTS
-            const script = `Current report for ${selectedCity}. The Air Quality Index is ${latest.aqi.toFixed(0)}, which is considered ${status.label}. The temperature is ${latest.temperature.toFixed(1)} degrees.`;
 
-            // UI State
+            const city = document.getElementById('city-select').value;
+            const btn = document.getElementById('btn-speak');
+            if (!cityData[city]?.length) return;
+            
+            const latest = cityData[city][cityData[city].length - 1];
+            const script = `Weather report for ${city}. The PM 2 point 5 Air Quality Index is ${latest.aqi.toFixed(0)}. Temperature is ${latest.temperature.toFixed(1)} degrees Celsius.`;
+
             btn.disabled = true;
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Generating Audio...`;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 mr-2 ai-spinner"></i> Generating...`;
             lucide.createIcons();
 
             try {
                 const response = await fetchWithBackoff(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${activeGeminiKey}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -567,372 +419,182 @@
                         })
                     }
                 );
-
                 const result = await response.json();
                 const audioData = result.candidates[0].content.parts[0].inlineData.data;
+                const binary = atob(audioData);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                 
-                // Convert and Play
-                const pcmArray = base64ToArrayBuffer(audioData);
-                const wavBlob = pcmToWav(new Int16Array(pcmArray), 24000);
-                const url = URL.createObjectURL(wavBlob);
-                
+                const blob = new Blob([bytes.buffer], { type: 'audio/wav' });
+                const url = URL.createObjectURL(blob);
+                const player = document.getElementById('audio-player');
                 player.src = url;
                 player.play();
-
-            } catch (error) {
-                console.error(error);
-                alert("Failed to generate audio report.");
+            } catch (e) {
+                console.error(e);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = originalHtml;
+                btn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4 mr-2"></i> Audio Report`;
                 lucide.createIcons();
             }
         }
 
-
-        // --- FIREBASE ---
-
-        async function initializeFirebase() {
+        // --- FIREBASE & CORE LOGIC ---
+        async function initialize() {
+            populateCities();
             try {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                if (initialAuthToken) await signInWithCustomToken(auth, initialAuthToken);
+                else await signInAnonymously(auth);
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         userId = user.uid;
-                        console.log("User authenticated:", userId);
-                        startDataListener();
-                        attachEventListeners();
-                    } else {
-                        console.error("Authentication failed or user signed out.");
-                        userId = crypto.randomUUID();
+                        startListeners();
+                        if (activeWeatherKey) handleCityChange();
                     }
                 });
-
-            } catch (error) {
-                console.error("Error initializing Firebase:", error);
-            }
+            } catch (e) { console.error(e); }
         }
-        
-        // NEW FUNCTION to handle city change separately
-        function handleCityChange() {
-            const selectedCity = document.getElementById('city-select').value;
-            
-            // Reset AI result cards when city changes
-            document.getElementById('trip-output-card').classList.add('hidden');
-            document.getElementById('trip-output-content').innerHTML = '';
-            document.getElementById('health-output-card').classList.add('hidden');
-            document.getElementById('health-output-content').innerHTML = '';
 
-            // Setup new listener
-            setupDataListener(selectedCity);
-            
-            // Force UI update (will show loading if data not ready)
-            updateDashboard();
-        }
-        
-        // Force populate dropdown on load
         function populateCities() {
-             const select = document.getElementById('city-select');
-             if (select.options.length === 0) {
-                 cityConfigs.forEach(c => {
-                    const option = document.createElement('option');
-                    option.value = c.city;
-                    option.textContent = c.city;
-                    select.appendChild(option);
-                 });
-                 // Sort options alphabetically for better UX
-                 const options = Array.from(select.options);
-                 options.sort((a, b) => a.text.localeCompare(b.text));
-                 select.innerHTML = '';
-                 options.forEach(o => select.add(o));
-                 
-                 // Select New Delhi by default or first one
-                 select.value = "New Delhi"; 
-             }
-        }
-
-        function attachEventListeners() {
-            const citySelect = document.getElementById('city-select');
-            // Remove old listener if it exists to avoid duplicates
-            citySelect.removeEventListener('change', handleCityChange);
-            citySelect.addEventListener('change', handleCityChange);
-        }
-
-        function startDataListener() {
-            if (unsubscribe) unsubscribe();
-
-            const dataCollectionRef = collection(db, DATA_COLLECTION_PATH);
-            const q = query(dataCollectionRef);
-
-            unsubscribe = onSnapshot(q, (snapshot) => {
-                
-                if (snapshot.empty && !realtimeInterval) {
-                    startRealtimeDataSimulation(true); 
-                } else if (!realtimeInterval) {
-                    startRealtimeDataSimulation(false);
-                }
-
-                let tempCityData = {};
-                let cityNames = new Set();
-                
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const city = data.city;
-                    if (city) {
-                        cityNames.add(city);
-                        if (data.timestamp && data.timestamp.toDate) {
-                            data.timestamp = data.timestamp.toDate();
-                        } else if (typeof data.timestamp === 'string') {
-                            data.timestamp = new Date(data.timestamp);
-                        }
-                        if (!tempCityData[city]) tempCityData[city] = [];
-                        tempCityData[city].push(data);
-                    }
-                });
-
-                cityData = tempCityData;
-                for (const city in cityData) {
-                    cityData[city].sort((a, b) => a.timestamp - b.timestamp);
-                }
-                
-                // We don't need to update city select from DB anymore since we force populate it
-                // But we can use this to check if data exists
-                updateDashboard();
-
-            }, (error) => {
-                console.error("Error listening to Firestore data:", error);
+            const select = document.getElementById('city-select');
+            capitals.sort().forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = opt.textContent = city;
+                select.appendChild(opt);
             });
+            select.value = "New Delhi";
         }
 
-        function generateReading(config, timestamp) {
-            const aqi = config.base_aqi + (Math.random() - 0.5) * config.aqi_range;
-            const temperature = config.base_temp + (Math.random() - 0.5) * config.temp_range;
-            const humidity = config.base_humidity + (Math.random() - 0.5) * config.hum_range;
-            const wind_speed = 1 + Math.random() * 3.5; 
-            
-            return {
-                city: config.city,
-                timestamp: timestamp,
-                aqi: Math.max(1, aqi),
-                temperature: temperature,
-                humidity: humidity,
-                wind_speed: wind_speed,
-                userId: userId || 'anonymous'
-            };
-        }
-        
-        async function startRealtimeDataSimulation(runHistoricalSeed) {
-            if (!db) return;
-
-            if (runHistoricalSeed) {
-                const baseTime = Date.now() - (24 * 60 * 60 * 1000); 
-                const intervals = 24; 
-
-                for (const config of cityConfigs) {
-                    for (let i = 0; i < intervals; i++) {
-                        const timestamp = new Date(baseTime + (i * 60 * 60 * 1000));
-                        const reading = generateReading(config, timestamp);
-                        try {
-                            await addDoc(collection(db, DATA_COLLECTION_PATH), reading);
-                        } catch (e) { console.error(e); }
-                    }
-                }
-            }
+        function startListeners() {
+            const q = query(collection(db, DATA_COLLECTION_PATH));
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                const newData = {};
+                snapshot.forEach(doc => {
+                    const d = doc.data();
+                    if (!newData[d.city]) newData[d.city] = [];
+                    const ts = d.timestamp?.toDate ? d.timestamp.toDate() : new Date(d.timestamp);
+                    newData[d.city].push({...d, timestamp: ts});
+                });
+                
+                for (let c in newData) newData[c].sort((a,b) => a.timestamp - b.timestamp);
+                cityData = newData;
+                updateDashboard(true);
+            });
 
             if (realtimeInterval) clearInterval(realtimeInterval);
-
-            // INCREASED TO 30 SECONDS (30000ms)
             realtimeInterval = setInterval(async () => {
-                const now = new Date();
-                for (const config of cityConfigs) {
-                    const reading = generateReading(config, now);
-                    try {
-                        await addDoc(collection(db, DATA_COLLECTION_PATH), reading);
-                    } catch (e) { console.error(e); }
+                const city = document.getElementById('city-select').value;
+                const reading = await fetchWeatherData(city);
+                if (reading && db) {
+                    try { await addDoc(collection(db, DATA_COLLECTION_PATH), reading); } catch(e){}
                 }
-            }, 30000); 
+            }, 30000);
         }
 
-
-        // Modified setupDataListener to handle single city listening more efficiently
-        function setupDataListener(city) {
-            if (!db || !userId) return;
-            // Logic here is mainly handled by the global listener, but we could optimize
-            // Currently relies on global snapshot
-        }
-
-        function updateDashboard(triggerPulse = false) {
-            const selectedCity = document.getElementById('city-select').value;
-            const data = cityData[selectedCity] || [];
-
-            if (data.length === 0) {
-                document.getElementById('latest-timestamp').textContent = 'N/A';
-                document.getElementById('latest-aqi').textContent = 'N/A';
-                const defaultCardClass = 'p-4 rounded-xl transition duration-500 bg-gray-700 text-white';
-                document.getElementById('latest-aqi-card').className = `flex items-center justify-between ${defaultCardClass} shadow-xl`;
-                document.getElementById('latest-temp-card').className = defaultCardClass;
-                document.getElementById('latest-humidity-card').className = defaultCardClass;
-                document.getElementById('latest-wind-card').className = defaultCardClass;
-                document.getElementById('latest-status-card').className = defaultCardClass + ' flex flex-col justify-center';
-                document.getElementById('latest-status').textContent = 'N/A';
-                document.getElementById('latest-status').className = 'quality-status-badge bg-gray-500 text-white mt-1 w-fit';
-                document.getElementById('data-table-body').innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No historical data available.</td></tr>';
-                renderChart([]);
-                return;
-            }
-
-            const latestReading = data[data.length - 1]; 
-            updateLatestReading(latestReading, triggerPulse);
-            updateDataTable(data);
-            renderChart(data);
-            lucide.createIcons();
+        function handleCityChange() {
+            document.getElementById('trip-output-card').classList.add('hidden');
+            document.getElementById('health-output-card').classList.add('hidden');
+            
+            const city = document.getElementById('city-select').value;
+            fetchWeatherData(city).then(reading => {
+                if (reading && db) addDoc(collection(db, DATA_COLLECTION_PATH), reading);
+            });
+            
+            updateDashboard();
         }
 
         function getAqiStatus(aqi) {
             if (aqi <= 50) return { label: 'Good', tailwindClass: 'bg-green-600 text-white', aqiCardClass: 'bg-green-800/80', detailCardClass: 'bg-green-900' };
             if (aqi <= 100) return { label: 'Moderate', tailwindClass: 'bg-yellow-500 text-black', aqiCardClass: 'bg-amber-700/80', detailCardClass: 'bg-amber-800' };
-            if (aqi <= 150) return { label: 'Unhealthy for Sensitive Groups', tailwindClass: 'bg-orange-500 text-white', aqiCardClass: 'bg-orange-700/80', detailCardClass: 'bg-orange-800' };
+            if (aqi <= 150) return { label: 'Sensitive', tailwindClass: 'bg-orange-500 text-white', aqiCardClass: 'bg-orange-700/80', detailCardClass: 'bg-orange-800' };
             if (aqi <= 200) return { label: 'Unhealthy', tailwindClass: 'bg-red-600 text-white', aqiCardClass: 'bg-red-800/80', detailCardClass: 'bg-red-900' };
-            if (aqi <= 300) return { label: 'Very Unhealthy', tailwindClass: 'bg-purple-700 text-white', aqiCardClass: 'bg-purple-900/80', detailCardClass: 'bg-purple-950' };
-            return { label: 'Hazardous', tailwindClass: 'bg-black text-red-400 border border-red-500', aqiCardClass: 'bg-red-950/90', detailCardClass: 'bg-zinc-900' };
+            return { label: 'Very Unhealthy', tailwindClass: 'bg-purple-700 text-white', aqiCardClass: 'bg-purple-900/80', detailCardClass: 'bg-purple-950' };
         }
 
-        function updateLatestReading(latestReading, triggerPulse) {
-            const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            document.getElementById('latest-timestamp').textContent = latestReading.timestamp.toLocaleDateString('en-US', dateOptions);
-            document.getElementById('latest-aqi').textContent = latestReading.aqi.toFixed(0);
-            document.getElementById('latest-temp').textContent = `${latestReading.temperature.toFixed(1)}°C`;
-            document.getElementById('latest-humidity').textContent = `${latestReading.humidity.toFixed(1)}%`;
-            document.getElementById('latest-wind').textContent = `${latestReading.wind_speed.toFixed(1)} m/s`;
+        function updateDashboard(pulse = false) {
+            const city = document.getElementById('city-select').value;
+            const data = cityData[city] || [];
             
-            const status = getAqiStatus(latestReading.aqi);
+            if (!data.length) {
+                document.getElementById('latest-aqi').textContent = "---";
+                return;
+            }
 
-            const aqiCard = document.getElementById('latest-aqi-card');
-            aqiCard.className = `flex items-center justify-between p-4 rounded-xl transition duration-500 ${status.aqiCardClass} text-white shadow-xl`;
+            const latest = data[data.length - 1];
+            const status = getAqiStatus(latest.aqi);
+
+            document.getElementById('latest-timestamp').textContent = latest.timestamp.toLocaleTimeString();
+            document.getElementById('latest-aqi').textContent = latest.aqi.toFixed(0);
+            document.getElementById('latest-temp').textContent = `${latest.temperature.toFixed(1)}°C`;
+            document.getElementById('latest-humidity').textContent = `${latest.humidity.toFixed(0)}%`;
+            document.getElementById('latest-wind').textContent = `${latest.wind_speed.toFixed(1)} m/s`;
             
-            const detailBaseClass = 'p-4 rounded-xl transition duration-500 text-white';
-            document.getElementById('latest-temp-card').className = `${detailBaseClass} ${status.detailCardClass}`;
-            document.getElementById('latest-humidity-card').className = `${detailBaseClass} ${status.detailCardClass}`;
-            document.getElementById('latest-wind-card').className = `${detailBaseClass} ${status.detailCardClass}`;
-            document.getElementById('latest-status-card').className = `${detailBaseClass} ${status.detailCardClass} flex flex-col justify-center`;
-
             const statusEl = document.getElementById('latest-status');
             statusEl.textContent = status.label;
             statusEl.className = `quality-status-badge ${status.tailwindClass} mt-1 w-fit`;
 
-            const aqiValueEl = document.getElementById('latest-aqi');
-            if (triggerPulse) {
-                aqiValueEl.classList.add('pulse-on-update');
-                setTimeout(() => { aqiValueEl.classList.remove('pulse-on-update'); }, 500);
-            }
+            document.getElementById('latest-aqi-card').className = `flex items-center justify-between p-4 rounded-xl transition duration-500 ${status.aqiCardClass} text-white shadow-xl ${pulse ? 'pulse-on-update' : ''}`;
+
+            updateTable(data);
+            updateChart(data);
+            lucide.createIcons();
         }
 
-        function renderChart(data) {
-            const canvas = document.getElementById('aqiChart');
+        function updateTable(data) {
+            const body = document.getElementById('data-table-body');
+            body.innerHTML = '';
+            data.slice().reverse().forEach(item => {
+                const row = body.insertRow();
+                row.className = 'hover:bg-gray-800/50 transition-colors';
+                row.innerHTML = `
+                    <td class="px-6 py-3 text-sm text-gray-300">${item.timestamp.toLocaleTimeString()}</td>
+                    <td class="px-6 py-3 text-sm font-bold text-white">${item.aqi.toFixed(1)}</td>
+                    <td class="px-6 py-3 text-xs"><span class="quality-status-badge ${getAqiStatus(item.aqi).tailwindClass}">${getAqiStatus(item.aqi).label}</span></td>
+                    <td class="px-6 py-3 text-sm text-gray-400">${item.temperature.toFixed(1)}°C</td>
+                    <td class="px-6 py-3 text-sm text-gray-400">${item.humidity.toFixed(0)}%</td>
+                    <td class="px-6 py-3 text-sm text-gray-400">${item.wind_speed.toFixed(1)}</td>
+                `;
+            });
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('aqiChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
-            const maxPoints = 50;
-            const relevantData = data.slice(Math.max(data.length - maxPoints, 0));
-            const labels = relevantData.map(item => item.timestamp);
-            const aqiValues = relevantData.map(item => item.aqi);
-
-            chartInstance = new Chart(canvas, {
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: data.map(d => d.timestamp),
                     datasets: [{
-                        label: 'AQI (PM2.5)',
-                        data: aqiValues,
-                        borderColor: '#38bdf8', 
+                        data: data.map(d => d.aqi),
+                        borderColor: '#38bdf8',
                         backgroundColor: 'rgba(56, 189, 248, 0.1)',
-                        tension: 0.4,
                         fill: true,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
-                        pointBackgroundColor: '#38bdf8'
+                        tension: 0.3
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { type: 'time', time: { unit: 'minute', tooltipFormat: 'MMM dd, HH:mm:ss' }, title: { display: false }, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        y: { 
-                            beginAtZero: true, 
-                            suggestedMax: 300,
-                            min: 0,
-                            max: 500, // Fixed scale to stop dancing
-                            title: { display: true, text: 'AQI', color: '#94a3b8' }, 
-                            ticks: { color: '#94a3b8' }, 
-                            grid: { color: '#334155' } 
-                        }
+                        x: { type: 'time', time: { unit: 'minute' }, ticks: { color: '#64748b' } },
+                        y: { min: 0, ticks: { color: '#64748b' } }
                     },
-                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+                    plugins: { legend: { display: false } }
                 }
             });
         }
 
-        function updateDataTable(data) {
-            const tableBody = document.getElementById('data-table-body');
-            tableBody.innerHTML = ''; 
-
-            // Reverse order for table
-            data.slice().reverse().forEach((item, index) => {
-                const isNewest = index === 0; 
-                const row = tableBody.insertRow();
-                row.className = `transition duration-300 ${isNewest ? 'bg-indigo-900/30' : 'hover:bg-gray-700/50'}`;
-                
-                const dateOptions = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                const status = getAqiStatus(item.aqi);
-
-                let cell;
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap text-sm font-medium text-white';
-                cell.textContent = item.timestamp.toLocaleDateString('en-US', dateOptions);
-
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap text-sm font-bold';
-                cell.textContent = item.aqi.toFixed(0);
-                
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap';
-                cell.innerHTML = `<span class="quality-status-badge ${status.tailwindClass}">${status.label}</span>`;
-
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap text-sm text-slate-300';
-                cell.innerHTML = `<span class="flex items-center"><i data-lucide="thermometer" class="w-4 h-4 mr-1 text-red-400"></i>${item.temperature.toFixed(1)}°C</span>`;
-
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap text-sm text-slate-300';
-                cell.innerHTML = `<span class="flex items-center"><i data-lucide="droplets" class="w-4 h-4 mr-1 text-blue-400"></i>${item.humidity.toFixed(1)}%</span>`;
-
-                cell = row.insertCell();
-                cell.className = 'px-6 py-3 whitespace-nowrap text-sm text-slate-300';
-                cell.innerHTML = `<span class="flex items-center"><i data-lucide="wind" class="w-4 h-4 mr-1 text-green-400"></i>${item.wind_speed.toFixed(1)} m/s</span>`;
-            });
-        }
-
-        // Expose functions globally
-        window.updateDashboard = updateDashboard;
-        window.handleCityChange = handleCityChange; // Correctly expose the change handler
-        window.planTrip = planTrip; 
+        window.handleCityChange = handleCityChange;
+        window.getHealthAdvice = getHealthAdvice;
+        window.planTrip = planTrip;
         window.speakStatus = speakStatus;
-        window.getHealthAdvice = getHealthAdvice; 
-
-        window.onload = () => {
-            populateCities();
-            initializeFirebase();
-            lucide.createIcons();
-        };
-
+        window.onload = initialize;
     </script>
 </body>
 </html>
